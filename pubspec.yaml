@@ -1,0 +1,36 @@
+name: mpc
+description: "A new Flutter plugin project."
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ^3.6.2
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.0.2
+  ffi: ^2.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  ffigen: ^9.0.1
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.mpc
+        pluginClass: MpcPlugin
+      ios:
+        pluginClass: MpcPlugin
+ffigen:
+  # 生成文件的路径
+  output: lib/src/ffi.dart
+  headers:
+    entry-points:
+      - libmpc.h
+
