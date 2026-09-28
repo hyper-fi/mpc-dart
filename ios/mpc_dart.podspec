@@ -9,9 +9,17 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
-  s.vendored_frameworks = '../native/ios/MpcDart.xcframework'
+  # Static Go archives (device + simulator), force-loaded into the
+  # mpc_dart.framework binary. FFI looks symbols up via RTLD_DEFAULT, nothing
+  # references them at link time, so -force_load is required to keep them.
+  s.preserve_paths   = '../native/ios/MpcDart.xcframework'
+  go_frameworks = '-framework Foundation -framework CoreFoundation -framework Security -framework SystemConfiguration -framework CFNetwork'
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    'OTHER_LDFLAGS[sdk=iphoneos*]' => "-Wl,-force_load,\"${PODS_TARGET_SRCROOT}/../native/ios/MpcDart.xcframework/ios-arm64/libmpc.a\" #{go_frameworks}",
+    'OTHER_LDFLAGS[sdk=iphonesimulator*]' => "-Wl,-force_load,\"${PODS_TARGET_SRCROOT}/../native/ios/MpcDart.xcframework/ios-arm64-simulator/libmpc.a\" #{go_frameworks}"
+  }
   s.dependency 'Flutter'
   s.platform         = :ios, '13.0'
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.swift_version    = '5.0'
 end
